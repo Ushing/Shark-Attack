@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+<meta charset="utf-8"/>
+
+<title>Shark Attack</title>
+
+<meta name="ad.size" content="width=300,height=250"/>    
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<!--https://developer.apple.com/library/safari/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html-->
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="format-detection" content="telephone=no"/>
+
+<!-- force webkit on 360 -->
+<meta name="renderer" content="webkit"/>
+<meta name="force-rendering" content="webkit"/>
+<!-- force edge on IE -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="msapplication-tap-highlight" content="no"/>
+
+<!-- force full screen on some browser -->
+<meta name="full-screen" content="yes"/>
+<meta name="x5-fullscreen" content="true"/>
+<meta name="360-fullscreen" content="true"/>
+
+<!-- force screen orientation on some browser -->
+<!-- <meta name="screen-orientation" content="portrait"/>
+<meta name="x5-orientation" content="portrait"> -->
+
+<meta name="browsermode" content="application"/>
+<meta name="x5-page-mode" content="app"/>
+<script> 
+	var clickTag = "https://play.google.com/store/apps/details?id=com.fpg.sharkattack&hl=en&gl=US";
+	if (/android/i.test(navigator.userAgent)) clickTag = 'https://play.google.com/store/apps/details?id=com.fpg.sharkattack&hl=en&gl=US';
+	else if(/iPad|iPhone|iPod/.test(navigator.userAgent)) clickTag = 'https://apps.apple.com/app/shark-attack-simulator-games/id1489941954';
+</script>
+
+<style>
+	.center {
+		max-width: 100%;
+		max-height: 100%;
+		display: block;
+		margin: auto auto;
+		vertical-align: middle;
+	}
+
+	html, body {
+		overflow: hidden;
+		width   : 100%;
+		height  : 100%;
+		margin  : 0;
+		padding : 0;
+		position: fixed;
+		display: flex;
+	}
+	.parent {
+		position: absolute;
+	}
+	.centered {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width   : 80%;
+		height  : 80%;
+		transform: translate(-50%, -50%);
+		z-index: 100;
+	}
+	video{
+		position:absolute; 
+		padding: 0;
+		margin: 0;
+		top: 50%;
+		left: 50%;
+		object-fit: cover;
+		z-index: 10;
+		height:100vh;
+		width: auto;
+		transform: translate(-50%, -50%);
+		display:none;
+	}
+	video::-webkit-media-controls {
+		display: none !important; 
+	}				
+	canvas {
+		top: 50%;
+		left: 50%;
+		-webkit-transform: translate(-50%, -50%);
+		position:absolute; 
+		z-index: 111;
+	}
+	#icon {
+		top: 10px;
+		left: 10px;
+		-webkit-transform: scale(0.4);
+		transform: scale(0.4);
+		transform-origin: left top;
+		backface-visibility: hidden;
+		position:absolute; 
+		z-index: 500;
+	}
+	#scope{    
+		left: 50%;
+		top: 50%;
+		-webkit-transform: translate(-50%, -50%);
+		animation-name: scope-anim-reverse;
+		animation-duration: 7s;
+		animation-iteration-count: infinite;
+		animation-timing-function: linear;
+		z-index: 112;
+	}
+	@keyframes scope-anim-reverse {
+		0%   {transform:translate(0%,50%);}
+		20%   {transform:translate(180%,120%);}
+		40%   {transform:translate(-50%,150%);}
+		60%   {transform:translate(180%,120%);}
+		80%   {transform:translate(130%,150%);}
+		100%   { transform:translate(0%,50%);}
+	}
+	 .btn {
+		position: absolute;
+		width:200px;
+		z-index:200;
+		padding: 0.7em 2.1em 0.8em;
+		border-radius: 10px;
+		margin: 8px 8px 8px 8px;
+		animation-name: btn-anim-reverse;
+		animation-duration: 0.5s;
+		animation-iteration-count: infinite;
+		animation-timing-function: linear;
+		left: 50%;
+		top: 90%;
+		-webkit-transform: translate(-50%, -50%);
+		color: #fbdedb;
+		font-family: sans-serif;
+		font-weight: 800;
+		font-size: 1.2em;
+		text-transform: uppercase;
+		text-align: center;
+		text-decoration: none;
+		-webkit-box-shadow: 0em -0.3rem 0em rgba(0, 0, 0, 0.1) inset;
+		-moz-box-shadow: 0em -0.3rem 0em rgba(0, 0, 0, 0.1) inset;
+		box-shadow: 0em -0.3rem 0em rgba(0, 0, 0, 0.1) inset;
+		
+	}
+	.btn2 {
+		position: absolute;
+		width:70px;
+		z-index:200;
+		padding: 0.8em 1em 1em;
+		border-radius: 6px;
+		margin: 8px 8px 8px 8px;
+		animation-name: btn-anim-reverse;
+		animation-duration: 0.5s;
+		animation-iteration-count: infinite;
+		animation-timing-function: linear;
+		left: 80%;
+		top: 5%;
+		-webkit-transform: translate(-50%, -50%);
+		color: #fbdedb;
+		font-family: sans-serif;
+		font-weight: 700;
+		font-size: 0.6em;
+		text-transform: uppercase;
+		text-align: center;
+		text-decoration: none;
+		-webkit-box-shadow: 0em -0.3rem 0em rgba(0, 0, 0, 0.1) inset;
+		-moz-box-shadow: 0em -0.3rem 0em rgba(0, 0, 0, 0.1) inset;
+		box-shadow: 0em -0.3rem 0em rgba(0, 0, 0, 0.1) inset;
+	}
+	@keyframes btn-anim-reverse {
+		0% {
+			-webkit-transform: translate(-50%, -50%);
+		}
+		50% {
+			-webkit-transform: translate(-50%, -60%);
+		}
+		100% {
+			-webkit-transform: translate(-50%, -50%);
+		}
+	}
+	.btn:hover, .btn:focus {
+		opacity: 0.8;
+	}
+	.btn:active {
+		-webkit-transform: scale(0.80);
+		-moz-transform: scale(0.80);
+		-ms-transform: scale(0.80);
+		-o-transform: scale(0.80);
+		transform: scale(0.80);
+	}
+	.btn.block {
+		display: block !important;
+	}
+
+	.red {
+		background-color: #d55050;
+	}
+	.disable-select {
+		user-select: none; /* supported by Chrome and Opera */
+	   -webkit-user-select: none; /* Safari */
+	   -khtml-user-select: none; /* Konqueror HTML */
+	   -moz-user-select: none; /* Firefox */
+	   -ms-user-select: none; /* Internet Explorer/Edge */
+	}
+</style>
+<script>
+	var state = 0;
+	var installNow = false;
+	var redirectLink;
+	
+	var ec_1 = "vid1.gif";
+	var ec_2 = "vid2.gif";
+	
+	var currOrient = "";
+	window.oncontextmenu = function(event) {
+		 event.preventDefault();
+		 event.stopPropagation();
+		 return false;
+	};
+	var currOrient = "";
+	
+	function gameSettings(){
+		redirectLink = clickTag;
+	}
+		
+	function handleSize(){
+		resetCSS();
+		var vid = document.getElementById('gifimage2');
+		vid.style.width = 300;
+		vid.style.height = 250;
+	}
+	function resetCSS(){
+		canvas.width = 300;
+		canvas.height = 250;
+	}
+</script>
+<script>
+	var initTime = new Date().getTime();
+	var gameover=0, gameTimeout;
+	var redirectEnable=false;
+	
+	function buttonCallBack(event, id){
+		event.preventDefault();
+		
+		if(gameover!=1){
+			var newTime = new Date().getTime();
+			gameover=1;
+			//if(newTime >= initTime+500)
+			//{
+			initTime = new Date().getTime();
+			console.log("state 00: "+initTime);
+			console.log("state val: "+state);
+			if(redirectEnable)
+			{
+				location.href = clickTag;
+			} else {
+				missedStart=0;
+				
+				var vid = document.getElementById('gifimage2');
+				vid.style.visibility = 'visible';
+				if(id==1)vid.setAttribute('src', ec_1);
+				else vid.setAttribute('src', ec_2);
+				console.log("setToP");
+				document.getElementById("btn").className = "btn2 red";
+				//vid.style.zIndex = 2000;
+				
+				state++;
+				
+				gameover=0;
+				redirectEnable=true;
+			}
+		}
+		if(state==1)
+		{			
+			var btn = document.getElementById("btn");
+			btn.className = "btn2 red";
+			btn.style.opacity=1;
+			btn.style.zIndex = 2200;
+		}
+	}
+	
+	function btnevent(event){
+		event.preventDefault();
+		console.log("redir");
+		location.href = clickTag;
+	}
+</script>
+</head>
+<body style = "background-color: #2d88b3;" >
+<div class="disable-select">
+<div id="gamebox" class="parent" style="position:absolute; background-color: #2d88b3; width: 300px; height: 250px;">
+	<a href="" id="btn" style="opacity: 0.5;" onclick="btnevent(event)">Install Now</a>
+	<img id="gifimage2" class="center" style="visibility: hidden;" src="vid1.gif" alt="Shark Attack">
+	<canvas id="gameCanvas">
+	</canvas>
+    <div class="centered">
+	</div>
+</div>
+<!--img id="icon" ontouchstart="buttonCallBack(event)" onmousedown="buttonCallBack(event)" src=""-->
+</div>
+<script>
+	var audioElement = document.createElement('audio');
+	
+	showMyAd();
+	
+	function showMyAd() {
+		gameSettings();
+		window.setInterval(handleSize, 5);
+	}
+
+	function onBlur() {
+		console.log("lefttab");
+	};
+	function onFocus(){
+		console.log("came back");
+	};
+	
+	if(!window.mraid){	
+		if (/*@cc_on!@*/false) { // check for Internet Explorer
+			document.onfocusin = onFocus;
+			document.onfocusout = onBlur;
+		} else {
+			window.onfocus = onFocus;
+			window.onblur = onBlur;
+		}
+	}
+	function viewableChangeHandler(viewable) {
+		if(viewable) {
+			// If the ad is viewable, show the ad:
+			onFocus(); 
+		} else {
+			// If not, pause the ad.
+			onBlur();
+		}
+	}
+
+	const canvas = document.getElementById('gameCanvas');
+	const ctx = canvas.getContext('2d');
+	const scopeImg = document.getElementById('scope');
+	var vidSource = document.getElementById('gifimage2');
+	var vidSource2 = document.getElementById('gifimage2');
+	
+	
+	// second sence
+	 const congratulationSprite = new Image(); // get this shark;
+	congratulationSprite.src = 'congratulation.png';
+	
+	const KillerwhaleSprite = new Image(); // get this shark1;
+	KillerwhaleSprite.src = '1.png';
+	
+	const TapToplaySprite = new Image(); // get this shark11;
+	TapToplaySprite.src = '2.png';
+	
+	
+	// first sence
+	const crosshairSprite = new Image(); // get this shark;
+	crosshairSprite.src = 'txt-1.png';	
+	const KillerSprite = new Image();
+	KillerSprite.src = 'txt-2.png';
+	
+	const FreeSprite = new Image();
+	FreeSprite.src = 'btn-free.png';
+	
+	const playerSprite = new Image();
+	playerSprite.src = 'hand.png';
+	
+	const bgSprite = new Image();
+	bgSprite.src = 'bg.png';
+	
+	const card1Sprite = new Image();
+	card1Sprite.src = 'Killer-whale-off.png';
+	
+	
+	if(window.innerWidth>window.innerHeight) {
+		canvas.width = 300;
+		canvas.height = 250;
+	} else {
+		canvas.width = 300;
+		canvas.height = 250;
+	}
+	let gameFrame = 0;
+	
+	ctx.font = '50px Georgia';
+	
+	let canvasPosition = canvas.getBoundingClientRect();
+	var vh = vidSource.style.height;
+	var vw = vidSource.style.width;
+	var zoomed = 0;
+	var offset = [vidSource.style.left,vidSource.style.top];
+	var secondScene = false;
+	var thardScene = false;
+	const mouse = {
+		x: canvas.width/2,
+		y: canvas.height/2,
+		click: false
+	}
+	var clientX, clientY;
+	var org1, org2;
+	var scopetimer=99;
+	canvas.addEventListener('mousedown', function(e){
+		//clickthrough(event);
+		mouse.click = true;
+		clientX = e.clientX;
+		clientY = e.clientY;
+		mouse.x = clientX - canvasPosition.left;
+		mouse.y = clientY- canvasPosition.top;
+		
+		org1 = mouse.x;
+		org2 = mouse.y;
+		
+		console.log("mousex: %f, mousey: %f", mouse.x, mouse.y);
+		//player.alpha=0;
+	});
+	
+	var counter = 0;
+	canvas.addEventListener('mouseup', function(e){
+		//player.alpha=0;
+		console.log("2 clickde");
+		if(secondScene)
+		buttonCallBack(event, 0);
+		if(!secondScene) {
+			//if(mouse.x > free.x+20 && mouse.x < free.x+120 && mouse.y < free.y+125 && mouse.y > free.y)
+			//{	
+			//	buttonCallBack(event, 1);
+				//secondScene = true;
+			//}
+			 if(mouse.x > free.x+20 && mouse.x < free.x+120 && mouse.y < free.y+125 && mouse.y > free.y)
+			{	
+			      if(counter == 1)
+				  {
+				  buttonCallBack(event, 2);
+		     	  secondScene = true;
+				  }
+				//crosshair.sprite = 
+				  else if(counter == 0)
+			     {
+				      thardScene = true;				  
+				  }
+				counter++;
+			}
+			else if(mouse.x > c2.x+20 && mouse.x < c2.x+120 && mouse.y < c2.y+125 && mouse.y > c2.y)
+			{
+			   buttonCallBack(event, 1);
+				secondScene = true;
+			}
+			
+			
+		}
+	});
+	document.addEventListener("click", function(){
+		mouse.click = false;
+		scopetimer = 0;
+		
+	});
+	
+	// second class work
+	class Congratulation {
+		constructor(){
+			this.x = canvas.width/2;
+			this.y = canvas.height/2+ 40;
+			this.radius = 1.0;
+			//this.height = 20;
+			this.angle = 0;
+			this.frameX = 0;
+			this.frameY = 0;
+			this.frame = 0;
+			this.spriteWidth = 170;
+			this.spriteHeight = 170;
+			this.alpha= 1;
+			this.sprite = congratulationSprite;
+		}
+		update(){
+
+		}
+		draw(){
+			ctx.save();
+			ctx.globalAlpha = this.alpha;
+			ctx.translate(this.x, this.y);
+			ctx.scale(2, 2);
+			ctx.drawImage(this.sprite, 0, 0, this.sprite.width, this.sprite.height, 0 - this.sprite.width/4, 0 - this.sprite.width/4, this.sprite.width * 0.5, this.sprite.height * 0.5);
+			ctx.restore();
+		}
+	}
+	const congrass = new Congratulation();
+	
+	
+	class Killer1 {
+		constructor(){
+			this.x = canvas.width/2-80;
+			this.y = canvas.height/2-80;
+			this.angle = 0;
+			this.frameX = 0;
+			this.frameY = 0;
+			this.frame = 0;
+			this.alpha=1;
+			this.sprite = KillerwhaleSprite;
+		}
+		update(){
+			
+		}
+		draw(){
+			ctx.save();
+			ctx.globalAlpha = this.alpha;
+			ctx.translate(this.x, this.y);
+			ctx.scale(0.5, 0.5);
+			ctx.drawImage(this.sprite, 0,0);
+			ctx.restore();
+		}
+	}
+	const killer22 = new Killer1();
+	
+	class TapTo {
+		constructor(){
+			this.x = canvas.width/2-120;
+			this.y = canvas.height/2+ 50;
+			this.angle = 0;
+			this.frameX = 0;
+			this.frameY = 0;
+			this.frame = 0;
+			this.alpha=1;
+			this.sprite = TapToplaySprite;
+		}
+		update(){
+			
+		}
+		draw(){
+			ctx.save();
+			ctx.globalAlpha = this.alpha;
+			ctx.translate(this.x, this.y);
+			ctx.scale(0.5, 0.5);
+			ctx.drawImage(this.sprite, 0, 0);
+			ctx.restore();
+		}
+	}
+	const tapto = new TapTo();
+	
+	
+	// first class work
+	class Crosshair {
+		constructor(){
+			this.x = canvas.width/2;
+			this.y = canvas.height/2;
+			this.radius = 1.0;
+			//this.height = 20;
+			this.angle = 0;
+			this.frameX = 0;
+			this.frameY = 0;
+			this.frame = 0;
+			this.spriteWidth = 170;
+			this.spriteHeight = 170;
+			this.alpha= 1;
+			this.sprite= crosshairSprite;
+			//this.sprite = congratulationSprite;
+		}
+		update(){
+
+		}
+		draw(){
+			ctx.save();
+			ctx.globalAlpha = this.alpha;
+			ctx.translate(this.x, this.y);
+			ctx.scale(1, 1);
+			ctx.drawImage(this.sprite, 0, 0, this.sprite.width, this.sprite.height, 0 - this.sprite.width/4, 0 - this.sprite.width/4, this.sprite.width * 0.5, this.sprite.height * 0.5);
+			ctx.restore();
+		}
+	}
+	const crosshair = new Crosshair();
+	
+	
+	
+	// for kill text
+	class Killer {
+		constructor(){
+			this.x = canvas.width/2-80;
+			this.y = canvas.height/2+ 25;
+			this.angle = 0;
+			this.frameX = 0;
+			this.frameY = 0;
+			this.frame = 0;
+			this.alpha=1;
+			this.sprite = KillerSprite;
+		}
+		update(){
+			
+		}
+		draw(){
+			ctx.save();
+			ctx.globalAlpha = this.alpha;
+			ctx.translate(this.x, this.y);
+			ctx.scale(0.3, 0.3);
+			ctx.drawImage(this.sprite, 0, 0);
+			ctx.restore();
+		}
+	}
+	const kill = new Killer();
+	
+	// free Image
+	class FreeImg {
+		constructor(){
+			this.x = canvas.width/2-70;
+			this.y = canvas.height/2+ 17;
+			this.angle = 0;
+			this.frameX = 0;
+			this.frameY = 0;
+			this.frame = 0;
+			this.alpha=1;
+			this.sprite = FreeSprite;
+		}
+		update(){
+			
+		}
+		draw(){
+			ctx.save();
+			ctx.globalAlpha = this.alpha;
+			ctx.translate(this.x, this.y);
+			ctx.scale(0.4, 0.4);
+			ctx.drawImage(this.sprite, 0, 0);
+			ctx.restore();
+		}
+	}
+	const free = new FreeImg();
+	
+	
+	
+	class Hand {
+		constructor(){
+			this.x = canvas.width/2 + 60;
+			this.y = canvas.height/2+100;
+			this.radius = 1.0;
+			//this.height = 20;
+			this.angle = 0;
+			this.frameX = 0;
+			this.frameY = 0;
+			this.frame = 0;
+			this.alpha=1;
+			this.sprite = playerSprite;
+			this.imgSrc= crosshairSprite;
+			this.goReverse = 0;
+		}
+		update(){
+			this.angle+=0.05;
+			//this.radius=Math.sin(this.angle)*60+15;
+			
+			if(this.angle>1000)
+				this.angle = 0;
+		}
+		draw(){
+			ctx.save();
+			ctx.globalAlpha = this.alpha;
+			ctx.translate(this.x+this.radius, this.y);
+			//ctx.translate(this.x, dist);
+			ctx.scale(0.5, 0.5);
+			ctx.drawImage(this.sprite, 0, 0, this.sprite.width, this.sprite.height, 0 - this.sprite.width/4, 0 - this.sprite.width/4, this.sprite.width * 0.5, this.sprite.height * 0.5);
+			ctx.restore();
+		}
+	}
+	const hand = new Hand();
+	
+	class Background {
+		constructor(){
+			this.x = canvas.width/2;
+			this.y = canvas.height/2;
+			this.angle = 0;
+			this.frameX = 0;
+			this.frameY = 0;
+			this.frame = 0;
+			this.alpha=1;
+			this.sprite = bgSprite;
+		}
+		update(){
+		}
+		draw(){
+			ctx.save();
+			ctx.globalAlpha = this.alpha;
+			ctx.scale(1, 1);
+			ctx.drawImage(this.sprite, 0, 0);
+			ctx.restore();
+		}
+	}
+	const bg = new Background();
+	
+	class Card1 {
+		constructor(){
+			this.x = canvas.width/2-80;
+			this.y = canvas.height/2-80;
+			this.angle = 0;
+			this.frameX = 0;
+			this.frameY = 0;
+			this.frame = 0;
+			this.alpha=1;
+			this.sprite = card1Sprite;
+		}
+		update(){
+			
+		}
+		draw(){
+			ctx.save();
+			ctx.globalAlpha = this.alpha;
+			ctx.translate(this.x, this.y);
+			ctx.scale(0.5, 0.5);
+			ctx.drawImage(this.sprite, 0, 0);
+			ctx.restore();
+		}
+	}
+	const c1 = new Card1();
+	
+	
+	function animate(){
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		if(!secondScene)
+		{ 
+		bg.update();
+		bg.draw();
+		crosshair.update();
+		crosshair.draw();
+		 
+		 
+		kill.update();
+		kill.draw();
+		
+		free.update();
+		free.draw();
+		
+        c1.update();
+		c1.draw();
+		//c2.update();
+		//c2.draw();
+		hand.update();
+		hand.draw();
+		}
+		if(thardScene)
+		{
+		  bg.update();
+		  bg.draw();
+		congrass.update();
+		congrass.draw();
+		  killer22.update();
+		  killer22.draw(); 
+		  kill.update();
+		  kill.draw();
+		  tapto.update();
+		  tapto.draw();
+		  hand.update();
+		hand.draw();
+		}
+		requestAnimationFrame(animate);
+	}
+	
+	animate();
+</script>
+</body>
+</html>
